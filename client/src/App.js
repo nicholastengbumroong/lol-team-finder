@@ -1,10 +1,13 @@
 import HomePage from './components/HomePage';
-import './css/App.css';
-
+import CustomNavbar from './components/CustomNavbar';
 
 function App() {
   return (
-    <HomePage></HomePage>
+    <div>
+      <CustomNavbar></CustomNavbar> 
+      <HomePage></HomePage>
+    </div>
+    
   );
 }
 

@@ -1,0 +1,7 @@
+input.position {
+    visibility: hidden;
+}
+
+textarea {
+    resize: none;
+}
