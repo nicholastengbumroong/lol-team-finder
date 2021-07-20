@@ -2,6 +2,6 @@ input.position {
     visibility: hidden;
 }
 
-textarea {
+.comment {
     resize: none;
 }

@@ -16,18 +16,20 @@ app.listen(port, () => {
     console.log('Listening on port', port); 
 });
 
-// Connect to MongoDB database 
-//const conn = process.env.MONGODB_URI || 'mongodb://localhost/27017/lol-team-finder'
-// mongoose.connect(conn, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//     useFindAndModify: false 
-// });
+//Connect to MongoDB database 
+const conn = process.env.MONGODB_URI || 'mongodb://localhost/27017/lol-team-finder'
+mongoose.connect(conn, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false 
+});
 //check if mongoose is connected
-// mongoose.connection.on('connected', () => {
-//     console.log('Mongoose is connected'); 
-// });
+mongoose.connection.on('connected', () => {
+    console.log('Mongoose is connected'); 
+});
 
 const riotAPI = require('./routes/riotAPI');
+const postAPI = require('./routes/postAPI');
 app.use('/riotAPI', riotAPI);
+app.use('/postAPI', postAPI);
 

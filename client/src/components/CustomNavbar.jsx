@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
-import PostFormButton from './PostFormButton';
+import PostForm from './PostForm';
 
 
 function CustomNavbar() {
@@ -12,7 +12,7 @@ function CustomNavbar() {
           <Navbar.Brand className='ms-3' href="#home">React-Bootstrap</Navbar.Brand>
         </Nav.Item>
         <Nav.Item className='ml-auto'>
-          <PostFormButton></PostFormButton>
+          <PostForm></PostForm>
         </Nav.Item>
       </Nav>
     </Navbar>
