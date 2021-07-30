@@ -1,28 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Container, Row } from 'react-bootstrap';
+import { Container, Row } from 'react-bootstrap';
 import axios from 'axios'; 
 import '../css/HomePage.css'
+import Post from './Post';
 
 function HomePage() {
-  // const [summoner, setSummoner] = useState({name: ''});
-  // const [matchHistory, setMatchHistory] = useState([])
-
-  // const handleSubmit = e => {
-  //   e.preventDefault(); 
-  //   console.log(summoner.name); 
-
-  //   axios.get('/riotAPI/get-summoner', {
-  //       params: {
-  //         name: summoner.name
-  //       }
-  //     })
-  //     .then((res) => {
-  //       setMatchHistory(res.data);
-  //     });
-    
-  //   console.log(matchHistory);
-  // }
-
 
   const [posts, setPosts] = useState([]);
 
@@ -43,9 +25,7 @@ function HomePage() {
 
   const items = posts.map((post, index) => (
     <Row key={post._id + index}>
-     <h5><b>{post.name}</b> • <small>{post.date}</small></h5>
-      <p>{post.position}</p>
-      <p>{post.comment}</p>
+      <Post post={post}></Post>
     </Row>
   ));
     
