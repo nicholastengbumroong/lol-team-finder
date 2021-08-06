@@ -15,6 +15,7 @@ function HomePage() {
   const getPosts = () => {
     axios.get('/postAPI/get-posts')
       .then((res) => {
+        console.log(res.data); 
         setPosts(res.data); 
         console.log('Data has been retrieved from the database'); 
       })

@@ -3,6 +3,7 @@ const router = express.Router();
 
 const LeagueJS = require("leaguejs");
 const leaguejs = new LeagueJS(process.env.RIOT_LOL_API_KEY);
+const DataDragonHelper = require('leaguejs/lib/DataDragon/DataDragonHelper');
 
 
 router.get("/get-summoner-details", (req, res) => {
@@ -15,8 +16,9 @@ router.get("/get-summoner-details", (req, res) => {
         leaguejs.League.gettingLeagueEntriesForSummonerId(accountObj.id)
           .then((rankObj) => {
             accountDetails.rankObj = rankObj.find(queueObj => queueObj.queueType === 'RANKED_SOLO_5x5'); 
-          }); 
-        return leaguejs.Match.gettingListByAccount(accountObj.accountId, {queue: 420, season: 13, endIndex: 3});
+          });
+        // change endIndex for number of matches to retrieve 
+        return leaguejs.Match.gettingListByAccount(accountObj.accountId, {queue: 420, season: 13, endIndex: 5});
     })
     .then((matchHistoryObj) => {
       let matchPromiseArr = []; 
@@ -26,7 +28,7 @@ router.get("/get-summoner-details", (req, res) => {
       Promise.all(matchPromiseArr)
         .then((matchList) => {
           accountDetails.matchHistory = matchList; 
-          res.send(accountDetails); 
+          res.json(accountDetails); 
         })
         .catch(console.error); 
     })
@@ -41,12 +43,17 @@ router.get("/get-account-info", (req, res) => {
     })
     .then((accountInfo) => {
       //console.log(accountInfo); 
-      res.send({
+      res.json({
         profileIconObj: accountInfo.profileIconObject,
         summonerLevel: accountInfo.summonerLevel
       }); 
     })
     .catch(console.error);
+});
+
+router.get('/get-champion-data', async (req, res) => {
+  let champData = await DataDragonHelper.gettingChampionsList();
+  res.json(champData);
 });
 
 

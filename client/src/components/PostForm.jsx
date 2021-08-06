@@ -17,7 +17,7 @@ function PostForm() {
     league: {tier: '', rank: ''},
     numGames: {wins: 0, losses: 0},
     kda: {avgKills: 0, avgDeaths: 0, avgAssists: 0},
-    mostPlayedChamps: {}
+    mostPlayedChamps: []
   }
 
   const [postInfo, setPostInfo] = useState(initialPostState); 
@@ -26,9 +26,11 @@ function PostForm() {
     setPostInfo({...initialPostState});
   };
 
-  useEffect(() => {
-    console.log(postInfo); 
-  }, [postInfo.mostPlayedChamps])
+  // useEffect(() => {
+  //   //console.log(postInfo);
+    
+  //   //getChampObjs(getMostPlayedChamps(postInfo.mostPlayedChamps, 3)); 
+  // }, [postInfo.mostPlayedChamps]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handlePositionSelect = (e) => {
     console.log(`selected ${e.target.id}`); 
@@ -41,7 +43,9 @@ function PostForm() {
 
   const getSummonerDetails = async () => {
     let res = await axios.get(`/riotAPI/get-summoner-details?name=${postInfo.name}`); 
-    let matchHistoryStats = getMatchHistoryStats(res.data.matchHistory, res.data.accountObj.id); 
+    console.log(res.data); 
+    let matchHistoryStats = getMatchHistoryStats(res.data.matchHistory, res.data.accountObj.id);
+    let mostPlayedChampsArr = getChampObjs(getMostPlayedChamps(matchHistoryStats.champions, 3));
     setPostInfo({
       ...postInfo,
       name: res.data.accountObj.name, 
@@ -51,7 +55,7 @@ function PostForm() {
       league: {tier: res.data.rankObj.tier, rank: res.data.rankObj.rank}, 
       numGames: {wins: res.data.rankObj.wins, losses: res.data.rankObj.losses},
       kda: {avgKills: matchHistoryStats.avgKills, avgDeaths: matchHistoryStats.avgDeaths, avgAssists: matchHistoryStats.avgAssists},
-      mostPlayedChamps: matchHistoryStats.champions
+      mostPlayedChamps: mostPlayedChampsArr
     });
   }
 
@@ -85,30 +89,61 @@ function PostForm() {
     } 
   }
 
-  const handleSubmit = (e) => {
+  const getMostPlayedChamps = (champsObj, numOfChamps) => {
+    let mostPlayedChamps = [];
+    for (let champId in champsObj) {
+      mostPlayedChamps.push([champId, champsObj[champId]]);
+    }
+    mostPlayedChamps.sort((a, b) => {
+      return b[1] - a[1]; 
+    });
+    return mostPlayedChamps.slice(0, numOfChamps); 
+  }
+
+  const getChampObjs = (mostPlayedChamps) => {
+    //let champIds = Object.keys(postInfo.mostPlayedChamps); 
+    // let champData = {}; 
+    // axios.get(`/riotAPI/get-champion-data`)
+    //   .then((res) => {
+    //     mostPlayedChamps.forEach((champArr) => {
+    //       let champName = res.data.keys[champArr[0]];
+    //       champData[champName] = res.data.data[champName]; 
+    //       champData[champName]['frequency'] = champArr[1]; 
+    //     });
+    //   });
+    axios.get(`/riotAPI/get-champion-data`)
+      .then((res) => {
+        mostPlayedChamps.forEach((champArr) => {
+          let champName = res.data.keys[champArr[0]];
+          champArr[0] = res.data.data[champName];
+        });
+      });
+    return mostPlayedChamps; 
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault(); 
     console.log(postInfo.name); 
-    getSummonerDetails();
-      
+    getSummonerDetails()
+      .then(() => {
+        console.log(postInfo); 
+        const post = {
+          postInfo: postInfo
+        }; 
+        console.log(post);
 
-
-    // const post = {
-    //   name: postInfo.name,
-    //   position: postInfo.position,
-    //   comment: postInfo.comment
-    // }; 
-
-    // axios({
-    //   url: '/postAPI/submit-post',
-    //   method: 'POST',
-    //   data: post
-    // })
-    // .then(() => {
-    //   console.log('Data has been sent to the server');
-    // })
-    // .catch(() => {
-    //   console.log('There was an error sending data to the server');
-    // });
+        axios({
+          url: '/postAPI/submit-post',
+          method: 'POST',
+          data: post
+        })
+        .then(() => {
+          console.log('Data has been sent to the server');
+        })
+        .catch(() => {
+          console.log('There was an error sending data to the server');
+        });
+      });
 
     toggleFormModal();  
   }

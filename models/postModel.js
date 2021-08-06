@@ -2,9 +2,7 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 const PostSchema = new Schema({
-  name: String,
-  position: String,
-  comment: String,
+  postInfo: Schema.Types.Mixed,
   date: Date
 });
 
