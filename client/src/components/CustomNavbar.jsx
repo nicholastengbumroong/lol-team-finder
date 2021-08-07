@@ -11,9 +11,6 @@ function CustomNavbar() {
         <Nav.Item>
           <Navbar.Brand className='ms-3' href="#home">React-Bootstrap</Navbar.Brand>
         </Nav.Item>
-        <Nav.Item className='ml-auto'>
-          <PostForm></PostForm>
-        </Nav.Item>
       </Nav>
     </Navbar>
   );

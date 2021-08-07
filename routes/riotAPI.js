@@ -8,7 +8,7 @@ const DataDragonHelper = require('leaguejs/lib/DataDragon/DataDragonHelper');
 
 router.get("/get-summoner-details", (req, res) => {
   console.log(req.query.name);
-  accountDetails = {accountObj: null, rankObj: null, matchHistory: []};
+  accountDetails = {accountObj: {}, rankObj: {}, matchHistory: []};
   
   leaguejs.Summoner.gettingByName(req.query.name)
     .then((accountObj) => {
@@ -32,7 +32,16 @@ router.get("/get-summoner-details", (req, res) => {
         })
         .catch(console.error); 
     })
-    .catch(console.error); 
+    .catch((err) => {
+      if (err.statusCode === 404) {
+        console.log('Ranked match history not found');
+        accountDetails.rankObj = {tier: 'unranked', rank: 'unranked'};
+        res.json(accountDetails); 
+      }
+      else {
+        console.log(err); 
+      }
+    }); 
 });
 
 router.get("/get-account-info", (req, res) => {

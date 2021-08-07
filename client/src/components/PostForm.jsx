@@ -3,7 +3,7 @@ import { Button, Modal, Form } from "react-bootstrap";
 import axios from "axios";
 import '../css/PostForm.css'
 
-function PostForm() {
+function PostForm(props) {
   const [show, setShow] = useState(false); 
   const toggleFormModal = () => setShow(!show); 
 
@@ -18,23 +18,25 @@ function PostForm() {
     numGames: {wins: 0, losses: 0},
     kda: {avgKills: 0, avgDeaths: 0, avgAssists: 0},
     mostPlayedChamps: []
+
   }
 
-  const [postInfo, setPostInfo] = useState(initialPostState); 
+  const [postInfo,  setPostInfo] = useState(initialPostState); 
 
-  const clearPostState = () => {
-    setPostInfo({...initialPostState});
-  };
-
-  const didMountRef = useRef(false); 
+  const triggerUseEffectRef = useRef(false); 
   useEffect(() => {
-    if(didMountRef.current) {
+    if(triggerUseEffectRef.current) {
       submitPost(postInfo); 
     }
     else {
-      didMountRef.current = true;
+      triggerUseEffectRef.current = true;
     }
   }, [postInfo.mostPlayedChamps]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const clearPostState = () => {
+    triggerUseEffectRef.current = false; 
+    setPostInfo({...initialPostState});
+  };
 
   const handlePositionSelect = (e) => {
     console.log(`selected ${e.target.id}`); 
@@ -145,6 +147,8 @@ function PostForm() {
     })
     .then(() => {
       console.log('Data has been sent to the server');
+      props.updatePosts();
+      clearPostState();  
     })
     .catch(() => {
       console.log('There was an error sending data to the server');

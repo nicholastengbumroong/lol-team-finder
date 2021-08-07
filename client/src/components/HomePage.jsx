@@ -3,6 +3,7 @@ import { Container, Row } from 'react-bootstrap';
 import axios from 'axios'; 
 import '../css/HomePage.css'
 import Post from './Post';
+import PostForm from './PostForm';
 
 function HomePage() {
 
@@ -25,13 +26,17 @@ function HomePage() {
   }
 
   const items = posts.map((post, index) => (
-    <Row key={post._id + index}>
+    <Row className='mt-3' key={post._id + index}>
       <Post post={post}></Post>
     </Row>
   ));
     
   return (
     <div className='homepage-parent'>
+      <div className='d-flex justify-content-center pb-2'>
+        <PostForm updatePosts={getPosts}></PostForm>   
+      </div>
+      
       <Container>
         {items} 
       </Container>
