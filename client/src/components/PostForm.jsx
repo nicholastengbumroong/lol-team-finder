@@ -1,4 +1,4 @@
-import  React, { useState, useEffect } from "react";
+import  React, { useState, useEffect, useRef } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
 import axios from "axios";
 import '../css/PostForm.css'
@@ -26,11 +26,15 @@ function PostForm() {
     setPostInfo({...initialPostState});
   };
 
-  // useEffect(() => {
-  //   //console.log(postInfo);
-    
-  //   //getChampObjs(getMostPlayedChamps(postInfo.mostPlayedChamps, 3)); 
-  // }, [postInfo.mostPlayedChamps]) // eslint-disable-line react-hooks/exhaustive-deps
+  const didMountRef = useRef(false); 
+  useEffect(() => {
+    if(didMountRef.current) {
+      submitPost(postInfo); 
+    }
+    else {
+      didMountRef.current = true;
+    }
+  }, [postInfo.mostPlayedChamps]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handlePositionSelect = (e) => {
     console.log(`selected ${e.target.id}`); 
@@ -45,7 +49,7 @@ function PostForm() {
     let res = await axios.get(`/riotAPI/get-summoner-details?name=${postInfo.name}`); 
     console.log(res.data); 
     let matchHistoryStats = getMatchHistoryStats(res.data.matchHistory, res.data.accountObj.id);
-    let mostPlayedChampsArr = getChampObjs(getMostPlayedChamps(matchHistoryStats.champions, 3));
+    let mostPlayedChampsArr = await getChampObjs(getMostPlayedChamps(matchHistoryStats.champions, 3));
     setPostInfo({
       ...postInfo,
       name: res.data.accountObj.name, 
@@ -100,7 +104,7 @@ function PostForm() {
     return mostPlayedChamps.slice(0, numOfChamps); 
   }
 
-  const getChampObjs = (mostPlayedChamps) => {
+  const getChampObjs = async (mostPlayedChamps) => {
     //let champIds = Object.keys(postInfo.mostPlayedChamps); 
     // let champData = {}; 
     // axios.get(`/riotAPI/get-champion-data`)
@@ -111,7 +115,7 @@ function PostForm() {
     //       champData[champName]['frequency'] = champArr[1]; 
     //     });
     //   });
-    axios.get(`/riotAPI/get-champion-data`)
+    await axios.get(`/riotAPI/get-champion-data`)
       .then((res) => {
         mostPlayedChamps.forEach((champArr) => {
           let champName = res.data.keys[champArr[0]];
@@ -124,28 +128,27 @@ function PostForm() {
   const handleSubmit = async (e) => {
     e.preventDefault(); 
     console.log(postInfo.name); 
-    getSummonerDetails()
-      .then(() => {
-        console.log(postInfo); 
-        const post = {
-          postInfo: postInfo
-        }; 
-        console.log(post);
-
-        axios({
-          url: '/postAPI/submit-post',
-          method: 'POST',
-          data: post
-        })
-        .then(() => {
-          console.log('Data has been sent to the server');
-        })
-        .catch(() => {
-          console.log('There was an error sending data to the server');
-        });
-      });
-
+    getSummonerDetails();
+     
     toggleFormModal();  
+  }
+
+
+  const submitPost = (postData) => {
+  
+    console.log(postData);
+
+    axios({
+      url: '/postAPI/submit-post',
+      method: 'POST',
+      data: postData
+    })
+    .then(() => {
+      console.log('Data has been sent to the server');
+    })
+    .catch(() => {
+      console.log('There was an error sending data to the server');
+    });
   }
 
 

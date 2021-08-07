@@ -31,7 +31,7 @@ function Post(props) {
 
   return (
     <div>
-      <h5><Button onClick={toggleProfileModal}>{postInfo.name}</Button> • <small>{postInfo.date}</small></h5>
+      <h5><Button onClick={toggleProfileModal}>{postInfo.name}</Button> • <small>{date}</small></h5>
       <p>{postInfo.position}</p>
       <p>{postInfo.comment}</p>
       <Button onClick={logStuff}>debug</Button>
