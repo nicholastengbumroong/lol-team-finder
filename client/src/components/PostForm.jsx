@@ -194,7 +194,7 @@ function PostForm(props) {
                   />
                 </label>
                 <input id='position-top' type='radio' className='position' onClick={handlePositionSelect}></input>
-                <label htmlFor='position-mid'>
+                <label htmlFor='position-middle'>
                   <img
                     src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-middle-blue.png'
                     alt=''
@@ -202,7 +202,7 @@ function PostForm(props) {
                     width='38px'
                   />
                 </label>
-                <input id='position-mid' type='radio' className='position' onClick={handlePositionSelect}></input>
+                <input id='position-middle' type='radio' className='position' onClick={handlePositionSelect}></input>
                 <label htmlFor='position-jungle'>
                   <img
                     src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-jungle-blue.png'

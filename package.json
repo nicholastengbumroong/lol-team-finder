@@ -27,6 +27,7 @@
     "express": "^4.17.1",
     "leagueapiwrapper": "^2.4.1",
     "leaguejs": "^2.1.3",
+    "moment": "^2.29.1",
     "mongoose": "^5.13.2",
     "nodemon": "^2.0.9",
     "path": "^0.12.7",

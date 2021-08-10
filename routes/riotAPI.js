@@ -18,6 +18,7 @@ router.get("/get-summoner-details", (req, res) => {
             accountDetails.rankObj = rankObj.find(queueObj => queueObj.queueType === 'RANKED_SOLO_5x5'); 
           });
         // change endIndex for number of matches to retrieve 
+        // TODO: change season to not be hard coded
         return leaguejs.Match.gettingListByAccount(accountObj.accountId, {queue: 420, season: 13, endIndex: 5});
     })
     .then((matchHistoryObj) => {
@@ -64,6 +65,13 @@ router.get('/get-champion-data', async (req, res) => {
   let champData = await DataDragonHelper.gettingChampionsList();
   res.json(champData);
 });
+
+router.get('/get-ddragon-version'), async (req, res) => {
+  let latestVersion = await DataDragonHelper.gettingLatestVersion();
+  res.json(latestVersion); 
+}
+
+
 
 
 module.exports = router;

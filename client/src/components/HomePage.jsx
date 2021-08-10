@@ -5,6 +5,10 @@ import '../css/HomePage.css'
 import Post from './Post';
 import PostForm from './PostForm';
 
+
+const VERSION = '11.15.1'; 
+const LOCALE = 'en_US'; 
+
 function HomePage() {
 
   const [posts, setPosts] = useState([]);
@@ -26,8 +30,8 @@ function HomePage() {
   }
 
   const items = posts.map((post, index) => (
-    <Row className='mt-3' key={post._id + index}>
-      <Post post={post}></Post>
+    <Row key={post._id + index}>
+      <Post post={post} version={VERSION} locale={LOCALE}></Post>
     </Row>
   ));
     
