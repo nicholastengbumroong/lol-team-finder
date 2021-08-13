@@ -122,7 +122,9 @@ function Post(props) {
               <b>{numGames.wins + 'W ' + numGames.losses + 'L (' + getWinRate() + '%)'}</b>
             </Col>
             <Col className='my-auto comment-textbox'>
-              <p className=''>{comment}</p>
+              <div className='my-1'>
+                {comment}
+              </div>
             </Col>
           </Row>
         </Container>
