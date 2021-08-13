@@ -1,10 +1,9 @@
 import HomePage from './components/HomePage';
-import CustomNavbar from './components/CustomNavbar';
+//import CustomNavbar from './components/CustomNavbar';
 
 function App() {
   return (
-    <div>
-      <CustomNavbar></CustomNavbar> 
+    <div> 
       <HomePage></HomePage>
     </div>
     

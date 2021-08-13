@@ -16,7 +16,8 @@ router.get("/get-summoner-details", (req, res) => {
         leaguejs.League.gettingLeagueEntriesForSummonerId(accountObj.id)
           .then((rankObj) => {
             accountDetails.rankObj = rankObj.find(queueObj => queueObj.queueType === 'RANKED_SOLO_5x5'); 
-          });
+          })
+          .catch(console.log);
         // change endIndex for number of matches to retrieve 
         // TODO: change season to not be hard coded
         return leaguejs.Match.gettingListByAccount(accountObj.accountId, {queue: 420, season: 13, endIndex: 5});
@@ -34,10 +35,19 @@ router.get("/get-summoner-details", (req, res) => {
         .catch(console.error); 
     })
     .catch((err) => {
+      //console.log(err); 
       if (err.statusCode === 404) {
-        console.log('Ranked match history not found');
-        accountDetails.rankObj = {tier: 'unranked', rank: 'unranked'};
-        res.json(accountDetails); 
+        // '{"status":{"message":"Data not found - summoner not found","status_code":404}}'
+        if (err.error.includes('summoner not found')) {
+          console.log('Summoner not found');
+          res.sendStatus(404); 
+        }
+        else {
+          console.log('Ranked match history not found');
+          accountDetails.rankObj = {tier: 'UNRANKED', rank: '', wins: 0, losses: 0};
+          res.json(accountDetails); 
+        }
+        
       }
       else {
         console.log(err); 

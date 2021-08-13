@@ -4,11 +4,13 @@ const router = express.Router();
 const Post = require('../models/postModel');
 
 
+
+
 router.post('/submit-post', (req, res) => {
   //TODO: post validation, i.e. does the username exist, was position selected, filter comment etc.
 
   console.log(req.body); 
-
+  //req.body.comment = req.body.comment.trim(); 
   const post = new Post({
     postInfo: req.body,
     date: new Date()

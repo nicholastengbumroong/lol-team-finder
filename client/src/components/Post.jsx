@@ -1,8 +1,7 @@
 import React from 'react';
-import { Button, Modal, Container, Col, Row } from 'react-bootstrap';
-import { useState, useEffect } from 'react'; 
+import { Modal, Container, Col, Row } from 'react-bootstrap';
+import { useState } from 'react'; 
 import '../css/Post.css'
-//import axios from 'axios';
 import PlayerProfile from './PlayerProfile';
 import moment from 'moment'
 
@@ -27,22 +26,16 @@ function Post(props) {
   const [show, setShow] = useState(false);
   const toggleProfileModal = () => setShow(!show); 
 
-  useEffect(() => {
-     
-
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-
-  const logStuff = async () => {
-    console.log(date);
-    console.log(postInfo);
-
-  }
-
   const getWinRate = () => {
     let totalGames = numGames.wins + numGames.losses; 
     let winRate = numGames.wins / totalGames; 
-    return (winRate * 100).toFixed(); 
+    if (!winRate) {
+      return 0;
+    }
+    else {
+      return (winRate * 100).toFixed(); 
+    }
+    
   }
 
   const champs = mostPlayedChamps.map((champ, index) => (
@@ -57,9 +50,9 @@ function Post(props) {
 
 
   return (
-      <div className='mt-3 pt-2 border border-primary border-2'>
+      <div className='mb-3 pt-2 border rounded-3 border-dark border-2 bg-dark'>
         <Container>
-          <Row>
+          <Row className='text-light'>
             <Col className='d-inline-flex col-3 my-auto'>
               <Col className='profile-icon'>
                 <img src={`http://ddragon.leagueoflegends.com/cdn/${version}/img/profileicon/${profileIconId}.png`}
@@ -80,7 +73,7 @@ function Post(props) {
             
           </Row>
 
-          <Row className='mt-2 border-bottom border-top'>
+          <Row className='text-white-50 mt-2 border-bottom border-top border-light'>
             <Col>
               <small>Tier</small>
             </Col>
@@ -101,7 +94,7 @@ function Post(props) {
             </Col>
           </Row>
 
-          <Row>
+          <Row className='text-light my-2 flex-nowrap'>
             <Col className='my-auto d-inline-flex'>
               <Col className='col-2 me-1'>
                 <img className='img-fluid' 
@@ -128,8 +121,8 @@ function Post(props) {
             <Col className='my-auto'>
               <b>{numGames.wins + 'W ' + numGames.losses + 'L (' + getWinRate() + '%)'}</b>
             </Col>
-            <Col className='my-auto border'>
-              <b>{comment}</b>
+            <Col className='my-auto comment-textbox'>
+              <p className=''>{comment}</p>
             </Col>
           </Row>
         </Container>

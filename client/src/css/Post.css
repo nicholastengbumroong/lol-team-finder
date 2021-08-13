@@ -3,3 +3,9 @@
     max-height: 15%;
     margin-right: 10px;
 }
+
+.comment-textbox {
+    background-color: #28282b;
+    border: solid 1px;
+    border-radius: 6px;
+}

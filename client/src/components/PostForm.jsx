@@ -9,7 +9,7 @@ function PostForm(props) {
 
   const initialPostState = {
     name: '', 
-    position: '', 
+    position: 'position-fill', 
     comment: '',
     summonerId: '', 
     profileIconId: 0, 
@@ -22,6 +22,8 @@ function PostForm(props) {
   }
 
   const [postInfo,  setPostInfo] = useState(initialPostState); 
+  const [validated, setValidated] = useState(false); 
+  const [validatedText, setValidatedText] = useState('');
 
   const triggerUseEffectRef = useRef(false); 
   useEffect(() => {
@@ -44,25 +46,51 @@ function PostForm(props) {
   }
 
   const handleChange = (e) => {
+    setValidated(false); 
     setPostInfo({...postInfo, [e.target.name]: e.target.value})
   }
 
   const getSummonerDetails = async () => {
-    let res = await axios.get(`/riotAPI/get-summoner-details?name=${postInfo.name}`); 
-    console.log(res.data); 
-    let matchHistoryStats = getMatchHistoryStats(res.data.matchHistory, res.data.accountObj.id);
-    let mostPlayedChampsArr = await getChampObjs(getMostPlayedChamps(matchHistoryStats.champions, 3));
-    setPostInfo({
-      ...postInfo,
-      name: res.data.accountObj.name, 
-      summonerId: res.data.accountObj.id, 
-      profileIconId: res.data.accountObj.profileIconId,
-      summonerLevel: res.data.accountObj.summonerLevel,
-      league: {tier: res.data.rankObj.tier, rank: res.data.rankObj.rank}, 
-      numGames: {wins: res.data.rankObj.wins, losses: res.data.rankObj.losses},
-      kda: {avgKills: matchHistoryStats.avgKills, avgDeaths: matchHistoryStats.avgDeaths, avgAssists: matchHistoryStats.avgAssists},
-      mostPlayedChamps: mostPlayedChampsArr
-    });
+    // let res = await axios.get(`/riotAPI/get-summoner-details?name=${postInfo.name}`); 
+    // let matchHistoryStats = getMatchHistoryStats(res.data.matchHistory, res.data.accountObj.id);
+    // let mostPlayedChampsArr = await getChampObjs(getMostPlayedChamps(matchHistoryStats.champions, 3));
+    // setPostInfo({
+    //   ...postInfo,
+    //   name: res.data.accountObj.name, 
+    //   summonerId: res.data.accountObj.id, 
+    //   profileIconId: res.data.accountObj.profileIconId,
+    //   summonerLevel: res.data.accountObj.summonerLevel,
+    //   league: {tier: res.data.rankObj.tier, rank: res.data.rankObj.rank}, 
+    //   numGames: {wins: res.data.rankObj.wins, losses: res.data.rankObj.losses},
+    //   kda: {avgKills: matchHistoryStats.avgKills, avgDeaths: matchHistoryStats.avgDeaths, avgAssists: matchHistoryStats.avgAssists},
+    //   mostPlayedChamps: mostPlayedChampsArr
+    // });
+
+    axios.get(`/riotAPI/get-summoner-details?name=${postInfo.name}`)
+      .then(async (res) => {
+        toggleFormModal();
+        let matchHistoryStats = getMatchHistoryStats(res.data.matchHistory, res.data.accountObj.id);
+        let mostPlayedChampsArr = await getChampObjs(getMostPlayedChamps(matchHistoryStats.champions, 3));
+
+        setPostInfo({
+          ...postInfo,
+          name: res.data.accountObj.name, 
+          summonerId: res.data.accountObj.id, 
+          profileIconId: res.data.accountObj.profileIconId,
+          summonerLevel: res.data.accountObj.summonerLevel,
+          league: {tier: res.data.rankObj.tier, rank: res.data.rankObj.rank}, 
+          numGames: {wins: res.data.rankObj.wins, losses: res.data.rankObj.losses},
+          kda: {avgKills: matchHistoryStats.avgKills, avgDeaths: matchHistoryStats.avgDeaths, avgAssists: matchHistoryStats.avgAssists},
+          mostPlayedChamps: mostPlayedChampsArr
+        });
+      })
+      .catch((err) => {
+        setPostInfo({...postInfo, name: ''});
+        setValidatedText('Summoner not found!');
+        setValidated(true); 
+
+      });
+    
   }
 
   const getMatchHistoryStats = (matchHistory, summonerId) => {
@@ -88,9 +116,9 @@ function PostForm(props) {
     let totalMatches = matchHistory.length;
     //console.log(totalKills, totalDeaths, totalAssists); 
     return {
-      avgKills: totalKills / totalMatches,
-      avgDeaths: totalDeaths / totalMatches, 
-      avgAssists: totalAssists / totalMatches,
+      avgKills: ((!(totalKills / totalMatches)) ? 0 : (totalKills / totalMatches)),
+      avgDeaths: ((!(totalDeaths / totalMatches)) ? 0 : (totalDeaths / totalMatches)), 
+      avgAssists: ((!(totalAssists / totalMatches)) ? 0 : (totalAssists / totalMatches)),
       champions 
     } 
   }
@@ -107,16 +135,6 @@ function PostForm(props) {
   }
 
   const getChampObjs = async (mostPlayedChamps) => {
-    //let champIds = Object.keys(postInfo.mostPlayedChamps); 
-    // let champData = {}; 
-    // axios.get(`/riotAPI/get-champion-data`)
-    //   .then((res) => {
-    //     mostPlayedChamps.forEach((champArr) => {
-    //       let champName = res.data.keys[champArr[0]];
-    //       champData[champName] = res.data.data[champName]; 
-    //       champData[champName]['frequency'] = champArr[1]; 
-    //     });
-    //   });
     await axios.get(`/riotAPI/get-champion-data`)
       .then((res) => {
         mostPlayedChamps.forEach((champArr) => {
@@ -129,17 +147,22 @@ function PostForm(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); 
-    console.log(postInfo.name); 
-    getSummonerDetails();
-     
-    toggleFormModal();  
+
+    if (postInfo.name === '') {
+      setValidatedText('Summoner name required!');
+      setValidated(true);
+      return;  
+    }
+    console.log(postInfo.name);
+
+    getSummonerDetails(); 
+    
   }
 
 
   const submitPost = (postData) => {
-  
     console.log(postData);
-
+    
     axios({
       url: '/postAPI/submit-post',
       method: 'POST',
@@ -153,24 +176,28 @@ function PostForm(props) {
     .catch(() => {
       console.log('There was an error sending data to the server');
     });
+
   }
 
 
   return (
     <>
-      <Button onClick={toggleFormModal}>
+      <Button className='px-4 py-2 fw-bold' variant='outline-light' onClick={toggleFormModal}  >
         Make a Post
       </Button>
 
       <Modal show={show} onHide={toggleFormModal} backdrop='static' centered>
-        <Modal.Header closeButton>
+        <Modal.Header className='bg-dark text-light' closeButton closeVariant='white'>
           <Modal.Title>Create Your Post</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <Form>
+        <Modal.Body className='bg-dark text-light'>
+          <Form noValidate validated={validated} onSubmit={handleSubmit}>
             <Form.Group className='mb-3'>
               <Form.Label>Summoner Name</Form.Label>
-              <Form.Control onChange={handleChange} name='name' value={postInfo.name}></Form.Control>
+              <Form.Control required onChange={handleChange} name='name' value={postInfo.name}></Form.Control>
+              <Form.Control.Feedback type='invalid'>
+                {validatedText}
+              </Form.Control.Feedback>
             </Form.Group>
             <Form.Group>
               <Form.Label>Position</Form.Label>
@@ -178,7 +205,7 @@ function PostForm(props) {
               <Form.Group className='mb-3'>
                 <label htmlFor='position-fill'>
                   <img
-                    src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-fill-blue.png'
+                    src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-fill.png'
                     alt=''
                     height='38px'
                     width='38px'
@@ -187,7 +214,7 @@ function PostForm(props) {
                 <input id='position-fill' type='radio' className='position' onClick={handlePositionSelect}></input>
                 <label htmlFor='position-top'>
                   <img
-                    src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-top-blue.png'
+                    src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-top.png'
                     alt=''
                     height='38px'
                     width='38px'
@@ -196,7 +223,7 @@ function PostForm(props) {
                 <input id='position-top' type='radio' className='position' onClick={handlePositionSelect}></input>
                 <label htmlFor='position-middle'>
                   <img
-                    src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-middle-blue.png'
+                    src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-middle.png'
                     alt=''
                     height='38px'
                     width='38px'
@@ -205,7 +232,7 @@ function PostForm(props) {
                 <input id='position-middle' type='radio' className='position' onClick={handlePositionSelect}></input>
                 <label htmlFor='position-jungle'>
                   <img
-                    src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-jungle-blue.png'
+                    src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-jungle.png'
                     alt=''
                     height='38px'
                     width='38px'
@@ -214,7 +241,7 @@ function PostForm(props) {
                 <input id='position-jungle' type='radio' className='position' onClick={handlePositionSelect}></input>
                 <label htmlFor='position-bottom'>
                   <img
-                    src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-bottom-blue.png'
+                    src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-bottom.png'
                     alt=''
                     height='38px'
                     width='38px'
@@ -223,7 +250,7 @@ function PostForm(props) {
                 <input id='position-bottom' type='radio' className='position' onClick={handlePositionSelect}></input>
                 <label htmlFor='position-utility'>
                   <img
-                    src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-utility-blue.png'
+                    src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-utility.png'
                     alt=''
                     height='38px'
                     width='38px'
@@ -235,12 +262,12 @@ function PostForm(props) {
             </Form.Group>
             <Form.Group>
               <Form.Label>Additional Comments</Form.Label>
-              <Form.Control className='comment' as='textarea' rows={2} onChange={handleChange} name='comment' value={postInfo.comment} />
+              <Form.Control className='comment prevent-validation' as='textarea' rows={2} onChange={handleChange} name='comment' value={postInfo.comment} />
             </Form.Group>
           </Form>
         </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={handleSubmit}>
+        <Modal.Footer className='bg-dark text-light'>
+          <Button onClick={handleSubmit} type='submit' variant='outline-light'>
             Submit
           </Button>
         </Modal.Footer>
