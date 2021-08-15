@@ -18,6 +18,7 @@ app.listen(port, () => {
 
 //Connect to MongoDB database 
 const conn = process.env.MONGODB_URI || 'mongodb://localhost/27017/lol-team-finder'
+console.log('MONGO CONNECTION: ', conn); 
 mongoose.connect(conn, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
