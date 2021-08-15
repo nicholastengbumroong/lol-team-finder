@@ -154,7 +154,6 @@ function PostForm(props) {
       setValidated(true);
       return;  
     }
-    console.log(postInfo.name);
 
     getSummonerDetails(); 
     

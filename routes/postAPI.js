@@ -68,4 +68,9 @@ router.post('/delete-post', (req, res) => {
     });
 });
 
+router.post('/update-verification', (req, res) => {
+  Post.findByIdAndUpdate(req.body.id, {isVerified: true}).exec(); 
+  res.json('Post has been verified');
+});
+
 module.exports = router;

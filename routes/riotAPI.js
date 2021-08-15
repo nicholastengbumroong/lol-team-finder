@@ -55,21 +55,21 @@ router.get("/get-summoner-details", (req, res) => {
     }); 
 });
 
-router.get("/get-account-info", (req, res) => {
-  console.log(req.query.name);
-  leaguejs.Summoner.gettingByName(req.query.name)
-    .then(() => {
-      return LeagueAPI.getSummonerByName(req.query.name);
-    })
-    .then((accountInfo) => {
-      //console.log(accountInfo); 
-      res.json({
-        profileIconObj: accountInfo.profileIconObject,
-        summonerLevel: accountInfo.summonerLevel
-      }); 
-    })
-    .catch(console.error);
-});
+// router.get("/get-account-info", (req, res) => {
+//   console.log(req.query.name);
+//   leaguejs.Summoner.gettingByName(req.query.name)
+//     .then(() => {
+//       return LeagueAPI.getSummonerByName(req.query.name);
+//     })
+//     .then((accountInfo) => {
+//       //console.log(accountInfo); 
+//       res.json({
+//         profileIconObj: accountInfo.profileIconObject,
+//         summonerLevel: accountInfo.summonerLevel
+//       }); 
+//     })
+//     .catch(console.error);
+// });
 
 router.get('/get-champion-data', async (req, res) => {
   let champData = await DataDragonHelper.gettingChampionsList();
@@ -81,7 +81,20 @@ router.get('/get-ddragon-version'), async (req, res) => {
   res.json(latestVersion); 
 }
 
-
+router.get('/verify-post', (req, res) => { 
+  leaguejs.Summoner.gettingByName(req.query.name)
+    .then((accountObj) => {
+      if (req.query.vProfileIconId == accountObj.profileIconId) {
+        res.json(true); 
+      }
+      else {
+        res.json(false); 
+      }
+    })
+    .catch((err) => {
+      console.log(err); 
+    });
+});
 
 
 module.exports = router;

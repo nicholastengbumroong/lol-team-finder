@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Row, Col, Button } from 'react-bootstrap';  
 
 import DeleteConfirmation from './DeleteConfirmation';
+import VerifyConfirmation from './VerifyConfirmation';
 
 
 function PlayerProfile(props) {
@@ -18,19 +19,22 @@ function PlayerProfile(props) {
         <Modal.Body className='bg-dark text-light'>
           <Row>
             <Col>
-            <h2>Is this you?</h2>
+            <h3>Is this you?</h3>
             </Col>
           </Row>
-          <Row className='mb-3'>
+          <Row className='my-3'>
             <Col className='text-center'>
-              <Button>Verify</Button>
+              <Button onClick={displayVerifyConfirmation} variant='outline-light' size='lg'>
+                Verify Post
+              </Button>
             </Col>
-          </Row>
-          <Row>
             <Col className='text-center'>
-              <Button onClick={displayDeleteConfirmation}>Delete</Button>
+              <Button onClick={displayDeleteConfirmation} variant='outline-light' size='lg'>
+                Delete Post
+              </Button>
             </Col>
           </Row>
+            
         </Modal.Body>
       )
     });
@@ -44,13 +48,25 @@ function PlayerProfile(props) {
     });
   }
 
+  const displayVerifyConfirmation = () => {
+    setModalBodyContent(() => {
+      return (
+        <VerifyConfirmation 
+          props={props} 
+          displayModalBodyDefault={displayModalBodyDefault}
+          version={props.version}
+        />
+      )
+    })
+  }
+
 
   return (
     <div>
       <Modal.Header className='bg-dark text-light' closeButton closeVariant='white'>
         <Modal.Title>
           <Row className='d-inline-flex'>
-            <Col className='col-2'>
+            <Col className='col-2 my-auto'>
               <img src={`http://ddragon.leagueoflegends.com/cdn/${props.version}/img/profileicon/${props.postInfo.profileIconId}.png`}
                 alt={props.postInfo.profileIconId}
                 className='img-fluid rounded-circle'

@@ -23,7 +23,6 @@ function DeleteConfirmation(props) {
   }, [submitTrigger]);
 
   const submitPassword = () => {
-    console.log(props); 
     axios.post('/postAPI/delete-post', {
       id: props.props.id,
       password: password
