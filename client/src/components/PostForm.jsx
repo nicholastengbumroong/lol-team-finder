@@ -267,7 +267,7 @@ function PostForm(props) {
               <Form.Label>Password</Form.Label>
               <Form.Control type='password' className='prevent-validation' onChange={handleChange} name='password' value={postInfo.password} />
               <Form.Text>
-                A password will be needed to delete your post
+                Your password will be needed to delete your post
               </Form.Text>
             </Form.Group>
           </Form>

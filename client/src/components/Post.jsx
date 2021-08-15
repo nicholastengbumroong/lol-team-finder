@@ -65,7 +65,7 @@ function Post(props) {
                 />
               </Col>
               <Col className='d-inline-flex my-auto'>
-                <h4 className='my-auto me-2' onClick={toggleProfileModal}>{name}</h4>
+                <h4 className='my-auto me-2 post-name' onClick={toggleProfileModal}>{name}</h4>
                 <OverlayTrigger 
                   placement='top' 
                   delay={{ show: 200, hide: 200 }}

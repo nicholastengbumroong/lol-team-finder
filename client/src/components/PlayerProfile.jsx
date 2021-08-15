@@ -18,21 +18,19 @@ function PlayerProfile(props) {
       return (
         <Modal.Body className='bg-dark text-light'>
           <Row>
-            <Col>
-            <h3>Is this you?</h3>
+            <Col className='text-center'>
+              <h3>Is this your post?</h3>
             </Col>
           </Row>
-          <Row className='my-3'>
-            <Col className='text-center'>
-              <Button onClick={displayVerifyConfirmation} variant='outline-light' size='lg'>
-                Verify Post
-              </Button>
-            </Col>
-            <Col className='text-center'>
-              <Button onClick={displayDeleteConfirmation} variant='outline-light' size='lg'>
-                Delete Post
-              </Button>
-            </Col>
+          <Row className='my-3 mx-5'>
+            <Button onClick={displayVerifyConfirmation} variant='outline-light' size='lg'>
+              Verify Post
+            </Button>
+          </Row>
+          <Row className='mx-5'>
+            <Button onClick={displayDeleteConfirmation} variant='outline-light' size='lg'>
+              Delete Post
+            </Button>
           </Row>
             
         </Modal.Body>
