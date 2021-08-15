@@ -1,6 +1,5 @@
-import React from 'react';
-import { Modal, Container, Col, Row } from 'react-bootstrap';
-import { useState } from 'react'; 
+import React, { useState } from 'react';
+import { Modal, Container, Col, Row, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import '../css/Post.css'
 import PlayerProfile from './PlayerProfile';
 import moment from 'moment'
@@ -9,7 +8,7 @@ function Post(props) {
 
   //TODO: replace champion object with just the full image name 
 
-  const {postInfo, date} = props.post;
+  const {postInfo, date, isVerified, _id} = props.post;
   const {
     name,
     position,
@@ -48,6 +47,12 @@ function Post(props) {
   ));
   
 
+  const renderTooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      Verified
+    </Tooltip>
+  );
+
 
   return (
       <div className='mb-3 pt-2 border rounded-3 border-dark border-2 bg-dark'>
@@ -60,13 +65,25 @@ function Post(props) {
                   className='img-fluid rounded-circle'
                 />
               </Col>
-              <h4 className='my-auto' onClick={toggleProfileModal}>{name}</h4> 
+              <Col className='d-inline-flex my-auto'>
+                <h4 className='my-auto me-2' onClick={toggleProfileModal}>{name}</h4>
+                <OverlayTrigger 
+                  placement='top' 
+                  delay={{ show: 200, hide: 200 }}
+                  overlay={renderTooltip}
+                >
+                  <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" className="bi bi-check2" viewBox="0 0 16 16">
+                      <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                    </svg> 
+                  </div>
+                  
+                </OverlayTrigger>
+                
+              </Col>
+              
             </Col>
-            {/*
-            <Col className='my-auto'>
-              <Button onClick={logStuff}>log</Button>
-            </Col>
-            */}
+
             <Col className='my-auto text-end'>
               {moment(date).fromNow()}
             </Col>
@@ -131,7 +148,13 @@ function Post(props) {
 
 
         <Modal show={show} onHide={toggleProfileModal} backdrop='static' size='lg' centered>
-          <PlayerProfile postInfo={postInfo}></PlayerProfile>
+          <PlayerProfile  
+            postInfo={postInfo}  
+            id={_id} 
+            version={version}
+            toggleProfileModal={toggleProfileModal}
+            updatePosts={props.updatePosts}
+          />
         </Modal>
       </div>
   )

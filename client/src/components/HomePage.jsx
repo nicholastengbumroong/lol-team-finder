@@ -3,7 +3,6 @@ import { Container, Row } from 'react-bootstrap';
 import axios from 'axios'; 
 import '../css/HomePage.css'
 import Post from './Post';
-import PostForm from './PostForm';
 import Filter from './Filter';
 import CustomNavbar from './CustomNavbar';
 
@@ -85,7 +84,7 @@ function HomePage() {
 
   const items = filteredPosts.map((post, index) => (
     <Row key={post._id + index}>
-      <Post post={post} version={VERSION} locale={LOCALE}></Post>
+      <Post post={post} version={VERSION} locale={LOCALE} updatePosts={getPosts}/>
     </Row>
   ));
     
@@ -93,7 +92,7 @@ function HomePage() {
     <div className='homepage-parent'>
       <CustomNavbar updatePosts={getPosts}/>
       <Container>
-        <Filter filterTier={filterTier} filterPosition={filterPosition}></Filter>
+        <Filter filterTier={filterTier} filterPosition={filterPosition}/>
       </Container>
 
       <Container>

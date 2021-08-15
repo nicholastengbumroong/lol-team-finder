@@ -11,6 +11,7 @@ function PostForm(props) {
     name: '', 
     position: 'position-fill', 
     comment: '',
+    password: '',
     summonerId: '', 
     profileIconId: 0, 
     summonerLevel: 0,
@@ -161,8 +162,7 @@ function PostForm(props) {
 
 
   const submitPost = (postData) => {
-    console.log(postData);
-    
+
     axios({
       url: '/postAPI/submit-post',
       method: 'POST',
@@ -260,9 +260,16 @@ function PostForm(props) {
                 
               </Form.Group>
             </Form.Group>
-            <Form.Group>
+            <Form.Group className='mb-3'>
               <Form.Label>Additional Comments</Form.Label>
               <Form.Control className='comment prevent-validation' as='textarea' rows={2} onChange={handleChange} name='comment' value={postInfo.comment} />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Password</Form.Label>
+              <Form.Control type='password' className='prevent-validation' onChange={handleChange} name='password' value={postInfo.password} />
+              <Form.Text>
+                A password will be needed to delete your post
+              </Form.Text>
             </Form.Group>
           </Form>
         </Modal.Body>
