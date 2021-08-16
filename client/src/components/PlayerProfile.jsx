@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Row, Col, Button } from 'react-bootstrap';  
+import { Modal, Row, Col, Button, Fade } from 'react-bootstrap';  
 
 import DeleteConfirmation from './DeleteConfirmation';
 import VerifyConfirmation from './VerifyConfirmation';
@@ -14,6 +14,7 @@ function PlayerProfile(props) {
   }, []);
 
   const displayModalBodyDefault = () => {
+  
     setModalBodyContent(() => {
       return (
         <Modal.Body className='bg-dark text-light'>
@@ -36,6 +37,7 @@ function PlayerProfile(props) {
         </Modal.Body>
       )
     });
+
   }
 
   const displayDeleteConfirmation = () => {
@@ -55,7 +57,7 @@ function PlayerProfile(props) {
           version={props.version}
         />
       )
-    })
+    });
   }
 
 
@@ -77,6 +79,8 @@ function PlayerProfile(props) {
         </Modal.Title>
       </Modal.Header>
       {modalBodyContent}
+
+      
       
     </div>
   )

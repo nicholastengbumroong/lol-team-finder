@@ -1,5 +1,5 @@
 import  React, { useState, useEffect, useRef } from "react";
-import { Button, Modal, Form } from "react-bootstrap";
+import { Button, Modal, Form, ToggleButtonGroup, ToggleButton, Row, Col } from "react-bootstrap";
 import axios from "axios";
 import '../css/PostForm.css'
 
@@ -9,7 +9,7 @@ function PostForm(props) {
 
   const initialPostState = {
     name: '', 
-    position: 'position-fill', 
+    position: '', 
     comment: '',
     password: '',
     summonerId: '', 
@@ -43,7 +43,7 @@ function PostForm(props) {
 
   const handlePositionSelect = (e) => {
     console.log(`selected ${e.target.id}`); 
-    setPostInfo({...postInfo, position: e.target.id}); 
+    setPostInfo({...postInfo, position: e.target.value}); 
   }
 
   const handleChange = (e) => {
@@ -52,21 +52,6 @@ function PostForm(props) {
   }
 
   const getSummonerDetails = async () => {
-    // let res = await axios.get(`/riotAPI/get-summoner-details?name=${postInfo.name}`); 
-    // let matchHistoryStats = getMatchHistoryStats(res.data.matchHistory, res.data.accountObj.id);
-    // let mostPlayedChampsArr = await getChampObjs(getMostPlayedChamps(matchHistoryStats.champions, 3));
-    // setPostInfo({
-    //   ...postInfo,
-    //   name: res.data.accountObj.name, 
-    //   summonerId: res.data.accountObj.id, 
-    //   profileIconId: res.data.accountObj.profileIconId,
-    //   summonerLevel: res.data.accountObj.summonerLevel,
-    //   league: {tier: res.data.rankObj.tier, rank: res.data.rankObj.rank}, 
-    //   numGames: {wins: res.data.rankObj.wins, losses: res.data.rankObj.losses},
-    //   kda: {avgKills: matchHistoryStats.avgKills, avgDeaths: matchHistoryStats.avgDeaths, avgAssists: matchHistoryStats.avgAssists},
-    //   mostPlayedChamps: mostPlayedChampsArr
-    // });
-
     axios.get(`/riotAPI/get-summoner-details?name=${postInfo.name}`)
       .then(async (res) => {
         toggleFormModal();
@@ -115,7 +100,6 @@ function PostForm(props) {
     });
 
     let totalMatches = matchHistory.length;
-    //console.log(totalKills, totalDeaths, totalAssists); 
     return {
       avgKills: ((!(totalKills / totalMatches)) ? 0 : (totalKills / totalMatches)),
       avgDeaths: ((!(totalDeaths / totalMatches)) ? 0 : (totalDeaths / totalMatches)), 
@@ -155,6 +139,10 @@ function PostForm(props) {
       return;  
     }
 
+    if (postInfo.position === '') {
+      setPostInfo({...postInfo, position: 'position-fill'})
+    }
+
     getSummonerDetails(); 
     
   }
@@ -162,19 +150,19 @@ function PostForm(props) {
 
   const submitPost = (postData) => {
 
-    axios({
-      url: '/postAPI/submit-post',
-      method: 'POST',
-      data: postData
-    })
-    .then(() => {
-      console.log('Data has been sent to the server');
-      props.updatePosts();
-      clearPostState();  
-    })
-    .catch(() => {
-      console.log('There was an error sending data to the server');
-    });
+    // axios({
+    //   url: '/postAPI/submit-post',
+    //   method: 'POST',
+    //   data: postData
+    // })
+    // .then(() => {
+    //   console.log('Data has been sent to the server');
+    //   props.updatePosts();
+    //   clearPostState();  
+    // })
+    // .catch(() => {
+    //   console.log('There was an error sending data to the server');
+    // });
 
   }
 
@@ -200,62 +188,52 @@ function PostForm(props) {
             </Form.Group>
             <Form.Group>
               <Form.Label>Position</Form.Label>
-              <Form.Text className='ms-3'>{postInfo.position}</Form.Text>
+              <Form.Text className='ms-3'>{postInfo.position ? postInfo.position.substring(9) : ''}</Form.Text>
               <Form.Group className='mb-3'>
-                <label htmlFor='position-fill'>
-                  <img
-                    src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-fill.png'
-                    alt=''
-                    height='38px'
-                    width='38px'
-                  />
-                </label>
-                <input id='position-fill' type='radio' className='position' onClick={handlePositionSelect}></input>
-                <label htmlFor='position-top'>
-                  <img
-                    src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-top.png'
-                    alt=''
-                    height='38px'
-                    width='38px'
-                  />
-                </label>
-                <input id='position-top' type='radio' className='position' onClick={handlePositionSelect}></input>
-                <label htmlFor='position-middle'>
-                  <img
-                    src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-middle.png'
-                    alt=''
-                    height='38px'
-                    width='38px'
-                  />
-                </label>
-                <input id='position-middle' type='radio' className='position' onClick={handlePositionSelect}></input>
-                <label htmlFor='position-jungle'>
-                  <img
-                    src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-jungle.png'
-                    alt=''
-                    height='38px'
-                    width='38px'
-                  />
-                </label>
-                <input id='position-jungle' type='radio' className='position' onClick={handlePositionSelect}></input>
-                <label htmlFor='position-bottom'>
-                  <img
-                    src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-bottom.png'
-                    alt=''
-                    height='38px'
-                    width='38px'
-                  />
-                </label>
-                <input id='position-bottom' type='radio' className='position' onClick={handlePositionSelect}></input>
-                <label htmlFor='position-utility'>
-                  <img
-                    src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-utility.png'
-                    alt=''
-                    height='38px'
-                    width='38px'
-                  />
-                </label>
-                <input id='position-utility' type='radio' className='position' onClick={handlePositionSelect}></input>
+                <Row>
+                  <Col className='col-9'>
+
+                    <ToggleButtonGroup type='radio' name='radio' value={postInfo.position} onClick={handlePositionSelect}>
+                      <ToggleButton id="pos-select-1" value='position-fill' variant='dark'>
+                        <img className='img-fluid'
+                          src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-fill.png'
+                          alt=''
+                        />
+                      </ToggleButton>
+                      <ToggleButton id="pos-select-2" value='position-top' variant='dark'>
+                        <img className='img-fluid'
+                          src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-top.png'
+                          alt=''
+                        />
+                      </ToggleButton>
+                      <ToggleButton id="pos-select-3" value='position-middle' variant='dark'>
+                        <img className='img-fluid'
+                          src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-middle.png'
+                          alt=''
+                        />
+                      </ToggleButton>
+                      <ToggleButton id="pos-select-4" value='position-jungle' variant='dark'>
+                        <img className='img-fluid'
+                          src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-jungle.png'
+                          alt=''
+                        />
+                      </ToggleButton>
+                      <ToggleButton id="pos-select-5" value='position-bottom' variant='dark'>
+                        <img className='img-fluid'
+                          src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-bottom.png'
+                          alt=''
+                        />
+                      </ToggleButton>
+                      <ToggleButton id="pos-select-6" value='position-utility' variant='dark'>
+                        <img className='img-fluid'
+                          src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-utility.png'
+                          alt=''
+                        />
+                      </ToggleButton>
+                    </ToggleButtonGroup>
+                  </Col>
+                </Row>
+                
                 
               </Form.Group>
             </Form.Group>
