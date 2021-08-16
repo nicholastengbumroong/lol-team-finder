@@ -4,5 +4,8 @@ html {
 
 body {
     min-height: 100vh;
+    background-image: url(images/bg-4v4.png);
+    background-position: center;
+    background-attachment: fixed;
     background-color: #2f2f31!important;
 } 

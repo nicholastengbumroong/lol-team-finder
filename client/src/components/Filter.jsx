@@ -67,37 +67,37 @@ function Filter(props) {
         </Col>
         <Col className='col-3 my-auto'>
         <ToggleButtonGroup type="checkbox" value={selectedPositions} onChange={handlePositionSelect}>
-          <ToggleButton id="pos-btn-1" value='position-fill' variant='outline-dark'>
+          <ToggleButton id="pos-btn-1" value='position-fill' variant='dark'>
             <img className='img-fluid'
               src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-fill.png'
               alt=''
             />
           </ToggleButton>
-          <ToggleButton id="pos-btn-2" value='position-top' variant='outline-dark'>
+          <ToggleButton id="pos-btn-2" value='position-top' variant='dark'>
             <img className='img-fluid'
               src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-top.png'
               alt=''
             />
           </ToggleButton>
-          <ToggleButton id="pos-btn-3" value='position-middle' variant='outline-dark'>
+          <ToggleButton id="pos-btn-3" value='position-middle' variant='dark'>
             <img className='img-fluid'
               src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-middle.png'
               alt=''
             />
           </ToggleButton>
-          <ToggleButton id="pos-btn-4" value='position-jungle' variant='outline-dark'>
+          <ToggleButton id="pos-btn-4" value='position-jungle' variant='dark'>
             <img className='img-fluid'
               src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-jungle.png'
               alt=''
             />
           </ToggleButton>
-          <ToggleButton id="pos-btn-5" value='position-bottom' variant='outline-dark'>
+          <ToggleButton id="pos-btn-5" value='position-bottom' variant='dark'>
             <img className='img-fluid'
               src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-bottom.png'
               alt=''
             />
           </ToggleButton>
-          <ToggleButton id="pos-btn-6" value='position-utility' variant='outline-dark'>
+          <ToggleButton id="pos-btn-6" value='position-utility' variant='dark'>
             <img className='img-fluid'
               src='https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-utility.png'
               alt=''
