@@ -20,7 +20,7 @@ function DeleteConfirmation(props) {
     else {
       submitPassword(); 
     }
-  }, [submitTrigger]);
+  }, [submitTrigger]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const submitPassword = () => {
     axios.post('/postAPI/delete-post', {

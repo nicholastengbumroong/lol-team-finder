@@ -7,6 +7,8 @@ function PostForm(props) {
   const [show, setShow] = useState(false); 
   const toggleFormModal = () => setShow(!show); 
 
+  const [isLoading, setIsLoading] = useState(false); 
+
   const initialPostState = {
     name: '', 
     position: '', 
@@ -42,7 +44,6 @@ function PostForm(props) {
   };
 
   const handlePositionSelect = (e) => {
-    console.log(`selected ${e.target.id}`); 
     setPostInfo({...postInfo, position: e.target.value}); 
   }
 
@@ -54,6 +55,7 @@ function PostForm(props) {
   const getSummonerDetails = async () => {
     axios.get(`/riotAPI/get-summoner-details?name=${postInfo.name}`)
       .then(async (res) => {
+        setIsLoading(false);
         toggleFormModal();
         let matchHistoryStats = getMatchHistoryStats(res.data.matchHistory, res.data.accountObj.id);
         let mostPlayedChampsArr = await getChampObjs(getMostPlayedChamps(matchHistoryStats.champions, 3));
@@ -71,9 +73,11 @@ function PostForm(props) {
         });
       })
       .catch((err) => {
+        console.log(err); 
         setPostInfo({...postInfo, name: ''});
         setValidatedText('Summoner not found!');
         setValidated(true); 
+        setIsLoading(false); 
 
       });
     
@@ -101,9 +105,9 @@ function PostForm(props) {
 
     let totalMatches = matchHistory.length;
     return {
-      avgKills: ((!(totalKills / totalMatches)) ? 0 : (totalKills / totalMatches)),
-      avgDeaths: ((!(totalDeaths / totalMatches)) ? 0 : (totalDeaths / totalMatches)), 
-      avgAssists: ((!(totalAssists / totalMatches)) ? 0 : (totalAssists / totalMatches)),
+      avgKills: ((!(totalKills / totalMatches)) ? 0 : (totalKills / totalMatches).toFixed(1)),
+      avgDeaths: ((!(totalDeaths / totalMatches)) ? 0 : (totalDeaths / totalMatches).toFixed(1)), 
+      avgAssists: ((!(totalAssists / totalMatches)) ? 0 : (totalAssists / totalMatches).toFixed(1)),
       champions 
     } 
   }
@@ -139,10 +143,7 @@ function PostForm(props) {
       return;  
     }
 
-    if (postInfo.position === '') {
-      setPostInfo({...postInfo, position: 'position-fill'})
-    }
-
+    setIsLoading(true); 
     getSummonerDetails(); 
     
   }
@@ -150,20 +151,19 @@ function PostForm(props) {
 
   const submitPost = (postData) => {
 
-    // axios({
-    //   url: '/postAPI/submit-post',
-    //   method: 'POST',
-    //   data: postData
-    // })
-    // .then(() => {
-    //   console.log('Data has been sent to the server');
-    //   props.updatePosts();
-    //   clearPostState();  
-    // })
-    // .catch(() => {
-    //   console.log('There was an error sending data to the server');
-    // });
-
+    axios({
+      url: '/postAPI/submit-post',
+      method: 'POST',
+      data: postData
+    })
+    .then(() => {
+      console.log('Data has been sent to the server');
+      props.updatePosts();
+      clearPostState();  
+    })
+    .catch(() => {
+      console.log('There was an error sending data to the server');
+    });
   }
 
 
@@ -192,7 +192,6 @@ function PostForm(props) {
               <Form.Group className='mb-3'>
                 <Row>
                   <Col className='col-9'>
-
                     <ToggleButtonGroup type='radio' name='radio' value={postInfo.position} onClick={handlePositionSelect}>
                       <ToggleButton id="pos-select-1" value='position-fill' variant='dark'>
                         <img className='img-fluid'
@@ -251,9 +250,16 @@ function PostForm(props) {
           </Form>
         </Modal.Body>
         <Modal.Footer className='bg-dark text-light'>
-          <Button onClick={handleSubmit} type='submit' variant='outline-light'>
-            Submit
-          </Button>
+          {isLoading ?
+            <Button type='button' disabled variant='outline-light'>
+              <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              <span className="sr-only">Loading...</span>
+            </Button>
+            :
+            <Button onClick={handleSubmit} type='submit' variant='outline-light'>
+              Submit
+            </Button>
+          }
         </Modal.Footer>
       </Modal>
     </>

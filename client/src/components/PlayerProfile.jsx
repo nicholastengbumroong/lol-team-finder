@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Row, Col, Button, Fade } from 'react-bootstrap';  
+import { Modal, Row, Col, Button } from 'react-bootstrap';  
 
 import DeleteConfirmation from './DeleteConfirmation';
 import VerifyConfirmation from './VerifyConfirmation';
@@ -11,7 +11,7 @@ function PlayerProfile(props) {
 
   useEffect(() => {
       displayModalBodyDefault();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const displayModalBodyDefault = () => {
   

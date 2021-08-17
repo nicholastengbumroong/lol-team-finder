@@ -8,19 +8,25 @@ const DataDragonHelper = require('leaguejs/lib/DataDragon/DataDragonHelper');
 
 router.get("/get-summoner-details", (req, res) => {
   console.log(req.query.name);
-  accountDetails = {accountObj: {}, rankObj: {}, matchHistory: []};
+  accountDetails = {
+    accountObj: {}, 
+    rankObj: {}, 
+    matchHistory: []
+  };
   
   leaguejs.Summoner.gettingByName(req.query.name)
     .then((accountObj) => {
         accountDetails.accountObj = accountObj; 
         leaguejs.League.gettingLeagueEntriesForSummonerId(accountObj.id)
           .then((rankObj) => {
-            accountDetails.rankObj = rankObj.find(queueObj => queueObj.queueType === 'RANKED_SOLO_5x5'); 
+            accountDetails.rankObj = (rankObj.find(queueObj => queueObj.queueType === 'RANKED_SOLO_5x5') === undefined) ? 
+              {tier: 'UNRANKED', rank: '', wins: 0, losses: 0} :
+              rankObj.find(queueObj => queueObj.queueType === 'RANKED_SOLO_5x5'); 
           })
           .catch(console.log);
         // change endIndex for number of matches to retrieve 
         // TODO: change season to not be hard coded
-        return leaguejs.Match.gettingListByAccount(accountObj.accountId, {queue: 420, season: 13, endIndex: 5});
+        return leaguejs.Match.gettingListByAccount(accountObj.accountId, {queue: 420, season: 13, endIndex: 20});
     })
     .then((matchHistoryObj) => {
       let matchPromiseArr = []; 
@@ -30,12 +36,12 @@ router.get("/get-summoner-details", (req, res) => {
       Promise.all(matchPromiseArr)
         .then((matchList) => {
           accountDetails.matchHistory = matchList; 
+          console.log(accountDetails);
           res.json(accountDetails); 
         })
         .catch(console.error); 
     })
     .catch((err) => {
-      //console.log(err); 
       if (err.statusCode === 404) {
         // '{"status":{"message":"Data not found - summoner not found","status_code":404}}'
         if (err.error.includes('summoner not found')) {
@@ -51,25 +57,10 @@ router.get("/get-summoner-details", (req, res) => {
       }
       else {
         console.log(err); 
+        res.sendStatus(404); 
       }
     }); 
 });
-
-// router.get("/get-account-info", (req, res) => {
-//   console.log(req.query.name);
-//   leaguejs.Summoner.gettingByName(req.query.name)
-//     .then(() => {
-//       return LeagueAPI.getSummonerByName(req.query.name);
-//     })
-//     .then((accountInfo) => {
-//       //console.log(accountInfo); 
-//       res.json({
-//         profileIconObj: accountInfo.profileIconObject,
-//         summonerLevel: accountInfo.summonerLevel
-//       }); 
-//     })
-//     .catch(console.error);
-// });
 
 router.get('/get-champion-data', async (req, res) => {
   let champData = await DataDragonHelper.gettingChampionsList();

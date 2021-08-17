@@ -4,11 +4,12 @@ const router = express.Router();
 const Post = require('../models/postModel');
 
 
-
-
 router.post('/submit-post', (req, res) => {
-  //TODO: post validation, i.e. does the username exist, was position selected, filter comment etc.
   console.log(req.body); 
+
+  if (req.body.position === '') {
+    req.body.position = 'position-fill'; 
+  }
 
   req.body.comment = req.body.comment.trim(); 
   const password = req.body.password;
