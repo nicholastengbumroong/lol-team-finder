@@ -12,6 +12,16 @@ A web app created for LoL players who want to find a duo partner to climb the ra
 - [Riot API](https://developer.riotgames.com/)
 
 ## Demo
+<p align="middle">
+<img src="https://github.com/nicholastengbumroong/lol-team-finder/blob/main/demo/homepage-img.png" width="860"/>
+<img src="https://github.com/nicholastengbumroong/lol-team-finder/blob/main/demo/post-img.png" width="860"/>
+</p>
+<p float="left" align="middle">
+  <img src="https://github.com/nicholastengbumroong/lol-team-finder/blob/main/demo/delete-img.png" width="40%"/>
+  <img src="https://github.com/nicholastengbumroong/lol-team-finder/blob/main/demo/verify-img.png" width="40%"/> 
+</p>
+
+
 
 ## Challenges
 * Rate limits
