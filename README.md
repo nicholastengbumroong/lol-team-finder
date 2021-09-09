@@ -1,5 +1,5 @@
 ## LoL-Team-Finder
-### \*Under review for personal API key\*
+https://lol-team-finder.herokuapp.com/
 
 A web app created for LoL players who want to find a duo partner to climb the ranked ladder with. The site lets you submit your name, preferred position and an optional comment and it will create a post using the Riot API to fetch your current rank/tier as well as some stats based on your recent ranked match history. Users are also able to verify or delete their posts should they feel the need to do so. 
 
