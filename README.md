@@ -1,5 +1,4 @@
 ## LoL-Team-Finder
-### CURRENT ISSUE WITH API KEY
 
 https://lol-team-finder.herokuapp.com/
 
